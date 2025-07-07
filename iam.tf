@@ -10,8 +10,10 @@ data "aws_iam_policy_document" "read" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["sqs:ListQueues"]
+    effect = "Allow"
+    actions = [
+      "sqs:ListQueues"
+    ]
     resources = ["*"]
   }
 }
