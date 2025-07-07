@@ -8,6 +8,12 @@ data "aws_iam_policy_document" "read" {
     ]
     resources = local.queue_resources
   }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["sqs:ListQueues"]
+    resources = ["*"]
+  }
 }
 
 data "aws_iam_policy_document" "write" {
