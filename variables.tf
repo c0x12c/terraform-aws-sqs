@@ -106,3 +106,27 @@ variable "enabled_dead_letter_queue" {
   type        = bool
   default     = true
 }
+
+variable "enabled_dlq_queue_policy" {
+  description = "Enable dead letter queue policy"
+  type        = bool
+  default     = false
+}
+
+variable "enabled_kms_encryption" {
+  description = "Enable KMS encryption for the SQS queue (by default, AWS SSE-SQS is used)"
+  type        = bool
+  default     = false
+}
+
+variable "kms_config" {
+  description = "KMS configuration for the SQS queue"
+  type = object({
+    kms_master_key_id                 = string
+    kms_data_key_reuse_period_seconds = number
+  })
+  default = {
+    kms_master_key_id                 = "alias/aws/sqs"
+    kms_data_key_reuse_period_seconds = 300
+  }
+}
