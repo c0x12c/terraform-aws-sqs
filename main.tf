@@ -6,6 +6,10 @@ locals {
   aws_region      = data.aws_region.current.name
   queue_resources = concat([aws_sqs_queue.queue.arn], (var.enabled_dead_letter_queue == true ? [aws_sqs_queue.dlq[0].arn] : []))
 
+  principal_roles = var.principal_roles != null ? var.principal_roles : [
+    "arn:aws:iam::${local.aws_account_id}:root"
+  ]
+
   redrive_policy = <<POLICY
 {
   "deadLetterTargetArn":"${try(aws_sqs_queue.dlq[0].arn, "")}",
@@ -29,6 +33,9 @@ resource "aws_sqs_queue" "dlq" {
 
   fifo_queue = var.fifo_enabled
 
+  kms_master_key_id                 = var.enabled_kms_encryption ? var.kms_config.kms_master_key_id : null
+  kms_data_key_reuse_period_seconds = var.enabled_kms_encryption ? var.kms_config.kms_data_key_reuse_period_seconds : null
+
   redrive_allow_policy = jsonencode({
     redrivePermission = "byQueue",
     sourceQueueArns   = [aws_sqs_queue.queue.arn]
@@ -51,6 +58,9 @@ resource "aws_sqs_queue" "queue" {
   deduplication_scope         = var.fifo_deduplication_scope
   fifo_throughput_limit       = var.fifo_throughput_limit
   content_based_deduplication = var.content_based_deduplication
+
+  kms_master_key_id                 = var.enabled_kms_encryption ? var.kms_config.kms_master_key_id : null
+  kms_data_key_reuse_period_seconds = var.enabled_kms_encryption ? var.kms_config.kms_data_key_reuse_period_seconds : null
 }
 
 /*
@@ -65,7 +75,7 @@ data "aws_iam_policy_document" "this" {
 
     principals {
       type        = "AWS"
-      identifiers = var.principal_roles != null ? var.principal_roles : ["*"]
+      identifiers = local.principal_roles
     }
 
     actions   = ["sqs:*"]
@@ -83,6 +93,7 @@ resource "aws_sqs_queue_policy" "this" {
   policy    = data.aws_iam_policy_document.this.json
 }
 
+
 resource "aws_sqs_queue_redrive_policy" "this" {
   count = var.enabled_dead_letter_queue ? 1 : 0
 
@@ -91,4 +102,27 @@ resource "aws_sqs_queue_redrive_policy" "this" {
     deadLetterTargetArn = aws_sqs_queue.dlq[0].arn
     maxReceiveCount     = var.max_receive_count
   })
+}
+
+data "aws_iam_policy_document" "sqs_dlq" {
+  count = var.enabled_dead_letter_queue ? 1 : 0
+
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = local.principal_roles
+    }
+
+    actions   = ["sqs:*"]
+    resources = [aws_sqs_queue.dlq[0].arn]
+  }
+}
+
+resource "aws_sqs_queue_policy" "dlq" {
+  count     = var.enabled_dead_letter_queue && var.enabled_dlq_queue_policy ? 1 : 0
+  queue_url = aws_sqs_queue.dlq[0].url
+  policy    = data.aws_iam_policy_document.sqs_dlq[0].json
 }

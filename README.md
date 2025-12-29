@@ -13,11 +13,12 @@ This module will create the following components:
 
 ```hcl
 module "sqs" {
-  source = "github.com/spartan-stratos/terraform-modules//aws/sqs?ref=v0.2.3"
+  source  = "c0x12c/sqs/aws"
+  version = "0.3.0"
 
   name              = "example-queue"
   max_receive_count = 1
-  principal_roles = ["arn:aws:iam::<account-id>:role/sqs-role"]
+  principal_roles   = ["arn:aws:iam::<account-id>:role/sqs-role"]
 }
 ```
 
@@ -29,16 +30,16 @@ module "sqs" {
 
 ## Requirements
 
-| Name                                                                      | Version  |
-|---------------------------------------------------------------------------|----------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.8 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws)                   | >= 5.75  |
+| Name                                                                     | Version  |
+| ------------------------------------------------------------------------ | -------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 1.9.8 |
+| <a name="requirement_aws"></a> [aws](#requirement_aws)                   | >= 5.75  |
 
 ## Providers
 
-| Name                                              | Version |
-|---------------------------------------------------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.75 |
+| Name                                             | Version |
+| ------------------------------------------------ | ------- |
+| <a name="provider_aws"></a> [aws](#provider_aws) | >= 5.75 |
 
 ## Modules
 
@@ -47,7 +48,7 @@ No modules.
 ## Resources
 
 | Name                                                                                                                                      | Type        |
-|-------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | [aws_iam_policy.read](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                             | resource    |
 | [aws_iam_policy.read_write](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                       | resource    |
 | [aws_iam_policy.write](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                            | resource    |
@@ -64,35 +65,35 @@ No modules.
 
 ## Inputs
 
-| Name                                                                                                                    | Description                                                                                                                        | Type           | Default    | Required |
-|-------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|----------------|------------|:--------:|
-| <a name="input_content_based_deduplication"></a> [content\_based\_deduplication](#input\_content\_based\_deduplication) | Max receive message count                                                                                                          | `bool`         | `false`    |    no    |
-| <a name="input_delay_seconds"></a> [delay\_seconds](#input\_delay\_seconds)                                             | The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900                       | `string`       | `"0"`      |    no    |
-| <a name="input_dlq_retention_seconds"></a> [dlq\_retention\_seconds](#input\_dlq\_retention\_seconds)                   | The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days)          | `string`       | `"259200"` |    no    |
-| <a name="input_enabled_dead_letter_queue"></a> [enabled\_dead\_letter\_queue](#input\_enabled\_dead\_letter\_queue)     | Enable dead letter queue                                                                                                           | `bool`         | `true`     |    no    |
-| <a name="input_enabled_read_write_policy"></a> [enabled\_read\_write\_policy](#input\_enabled\_read\_write\_policy)     | Enable read-write policy                                                                                                           | `bool`         | `false`    |    no    |
-| <a name="input_fifo_deduplication_scope"></a> [fifo\_deduplication\_scope](#input\_fifo\_deduplication\_scope)          | Specifies whether message deduplication occurs at the message group or queue level. (perQueue or perMessageGroupId)                | `string`       | `null`     |    no    |
-| <a name="input_fifo_enabled"></a> [fifo\_enabled](#input\_fifo\_enabled)                                                | Specify whether enable FIFO or not for the SQS queue                                                                               | `bool`         | `false`    |    no    |
-| <a name="input_fifo_throughput_limit"></a> [fifo\_throughput\_limit](#input\_fifo\_throughput\_limit)                   | Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group (perQueue or perMessageGroupId) | `string`       | `null`     |    no    |
-| <a name="input_max_receive_count"></a> [max\_receive\_count](#input\_max\_receive\_count)                               | Max receive message count                                                                                                          | `number`       | `3`        |    no    |
-| <a name="input_max_size"></a> [max\_size](#input\_max\_size)                                                            | The limit of how many bytes a message can contain before Amazon SQS rejects it                                                     | `string`       | `"2048"`   |    no    |
-| <a name="input_name"></a> [name](#input\_name)                                                                          | The name for creating queue names                                                                                                  | `string`       | n/a        |   yes    |
-| <a name="input_principal_roles"></a> [principal\_roles](#input\_principal\_roles)                                       | A list of IAM roles that a specific principal (user, service, or account) can assume.                                              | `list(string)` | `null`     |    no    |
-| <a name="input_read_policy_name"></a> [read\_policy\_name](#input\_read\_policy\_name)                                  | The name of the custom read policy                                                                                                 | `string`       | `null`     |    no    |
-| <a name="input_read_write_policy_name"></a> [read\_write\_policy\_name](#input\_read\_write\_policy\_name)              | Custom name for the read-write policy                                                                                              | `string`       | `null`     |    no    |
-| <a name="input_retention_seconds"></a> [retention\_seconds](#input\_retention\_seconds)                                 | The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days)          | `string`       | `"86400"`  |    no    |
-| <a name="input_visibility_timeout_seconds"></a> [visibility\_timeout\_seconds](#input\_visibility\_timeout\_seconds)    | The visibility timeout for the queue. An integer from 0 to 43200                                                                   | `string`       | `"30"`     |    no    |
-| <a name="input_wait_seconds"></a> [wait\_seconds](#input\_wait\_seconds)                                                | The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning                         | `string`       | `"10"`     |    no    |
-| <a name="input_write_policy_name"></a> [write\_policy\_name](#input\_write\_policy\_name)                               | The name of the custom write policy                                                                                                | `string`       | `null`     |    no    |
+| Name                                                                                                                 | Description                                                                                                                        | Type           | Default    | Required |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- | ---------- | :------: |
+| <a name="input_content_based_deduplication"></a> [content\_based\_deduplication](#input_content_based_deduplication) | Max receive message count                                                                                                          | `bool`         | `false`    |    no    |
+| <a name="input_delay_seconds"></a> [delay\_seconds](#input_delay_seconds)                                            | The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900                       | `string`       | `"0"`      |    no    |
+| <a name="input_dlq_retention_seconds"></a> [dlq\_retention\_seconds](#input_dlq_retention_seconds)                   | The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days)          | `string`       | `"259200"` |    no    |
+| <a name="input_enabled_dead_letter_queue"></a> [enabled\_dead\_letter\_queue](#input_enabled_dead_letter_queue)      | Enable dead letter queue                                                                                                           | `bool`         | `true`     |    no    |
+| <a name="input_enabled_read_write_policy"></a> [enabled\_read\_write\_policy](#input_enabled_read_write_policy)      | Enable read-write policy                                                                                                           | `bool`         | `false`    |    no    |
+| <a name="input_fifo_deduplication_scope"></a> [fifo\_deduplication\_scope](#input_fifo_deduplication_scope)          | Specifies whether message deduplication occurs at the message group or queue level. (perQueue or perMessageGroupId)                | `string`       | `null`     |    no    |
+| <a name="input_fifo_enabled"></a> [fifo\_enabled](#input_fifo_enabled)                                               | Specify whether enable FIFO or not for the SQS queue                                                                               | `bool`         | `false`    |    no    |
+| <a name="input_fifo_throughput_limit"></a> [fifo\_throughput\_limit](#input_fifo_throughput_limit)                   | Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group (perQueue or perMessageGroupId) | `string`       | `null`     |    no    |
+| <a name="input_max_receive_count"></a> [max\_receive\_count](#input_max_receive_count)                               | Max receive message count                                                                                                          | `number`       | `3`        |    no    |
+| <a name="input_max_size"></a> [max\_size](#input_max_size)                                                           | The limit of how many bytes a message can contain before Amazon SQS rejects it                                                     | `string`       | `"2048"`   |    no    |
+| <a name="input_name"></a> [name](#input_name)                                                                        | The name for creating queue names                                                                                                  | `string`       | n/a        |   yes    |
+| <a name="input_principal_roles"></a> [principal\_roles](#input_principal_roles)                                      | A list of IAM roles that a specific principal (user, service, or account) can assume.                                              | `list(string)` | `null`     |    no    |
+| <a name="input_read_policy_name"></a> [read\_policy\_name](#input_read_policy_name)                                  | The name of the custom read policy                                                                                                 | `string`       | `null`     |    no    |
+| <a name="input_read_write_policy_name"></a> [read\_write\_policy\_name](#input_read_write_policy_name)               | Custom name for the read-write policy                                                                                              | `string`       | `null`     |    no    |
+| <a name="input_retention_seconds"></a> [retention\_seconds](#input_retention_seconds)                                | The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days)          | `string`       | `"86400"`  |    no    |
+| <a name="input_visibility_timeout_seconds"></a> [visibility\_timeout\_seconds](#input_visibility_timeout_seconds)    | The visibility timeout for the queue. An integer from 0 to 43200                                                                   | `string`       | `"30"`     |    no    |
+| <a name="input_wait_seconds"></a> [wait\_seconds](#input_wait_seconds)                                               | The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning                         | `string`       | `"10"`     |    no    |
+| <a name="input_write_policy_name"></a> [write\_policy\_name](#input_write_policy_name)                               | The name of the custom write policy                                                                                                | `string`       | `null`     |    no    |
 
 ## Outputs
 
-| Name                                                                                                                                  | Description                                                      |
-|---------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
-| <a name="output_dlq"></a> [dlq](#output\_dlq)                                                                                         | The SQS dead letter queue info                                   |
-| <a name="output_iam_policy_sqs_read_arn"></a> [iam\_policy\_sqs\_read\_arn](#output\_iam\_policy\_sqs\_read\_arn)                     | n/a                                                              |
-| <a name="output_iam_policy_sqs_read_write_arn"></a> [iam\_policy\_sqs\_read\_write\_arn](#output\_iam\_policy\_sqs\_read\_write\_arn) | The ARN of the IAM policy for read-write access to the SQS queue |
-| <a name="output_iam_policy_sqs_write_arn"></a> [iam\_policy\_sqs\_write\_arn](#output\_iam\_policy\_sqs\_write\_arn)                  | n/a                                                              |
-| <a name="output_queue"></a> [queue](#output\_queue)                                                                                   | The SQS queue info                                               |
+| Name                                                                                                                            | Description                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| <a name="output_dlq"></a> [dlq](#output_dlq)                                                                                    | The SQS dead letter queue info                                   |
+| <a name="output_iam_policy_sqs_read_arn"></a> [iam\_policy\_sqs\_read\_arn](#output_iam_policy_sqs_read_arn)                    | n/a                                                              |
+| <a name="output_iam_policy_sqs_read_write_arn"></a> [iam\_policy\_sqs\_read\_write\_arn](#output_iam_policy_sqs_read_write_arn) | The ARN of the IAM policy for read-write access to the SQS queue |
+| <a name="output_iam_policy_sqs_write_arn"></a> [iam\_policy\_sqs\_write\_arn](#output_iam_policy_sqs_write_arn)                 | n/a                                                              |
+| <a name="output_queue"></a> [queue](#output_queue)                                                                              | The SQS queue info                                               |
 
 <!-- END_TF_DOCS -->

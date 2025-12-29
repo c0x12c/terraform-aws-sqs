@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0]() (2025-12-29)
+
+### Breaking changes
+* Update the default `principal_roles`, remove the wide access `*`
+
+### Features
+
+* Update module source to Terraform Registry format (c0x12c/sqs/aws)
+* Add `enabled_dlq_queue_policy` variable to optionally enable dead letter queue policy
+* Add separate IAM policy document and queue policy resources for DLQ
+
 ## [0.2.4]() (2025-07-07)
 
 ### Features
