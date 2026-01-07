@@ -14,7 +14,7 @@ This module will create the following components:
 ```hcl
 module "sqs" {
   source  = "c0x12c/sqs/aws"
-  version = "0.3.0"
+  version = "0.4.0"
 
   name              = "example-queue"
   max_receive_count = 1

@@ -79,7 +79,7 @@ variable "dlq_principals" {
     identifiers = list(string)
   }))
   default = null
-  
+
 }
 
 variable "content_based_deduplication" {
