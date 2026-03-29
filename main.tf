@@ -6,9 +6,16 @@ locals {
   aws_region      = data.aws_region.current.name
   queue_resources = concat([aws_sqs_queue.queue.arn], (var.enabled_dead_letter_queue == true ? [aws_sqs_queue.dlq[0].arn] : []))
 
-  principal_roles = var.principal_roles != null ? var.principal_roles : [
-    "arn:aws:iam::${local.aws_account_id}:root"
-  ]
+  # principal_roles = var.principal_roles != null ? var.principal_roles : [
+  #   "arn:aws:iam::${local.aws_account_id}:root"
+  # ]
+
+  principals = var.principals != null ? var.principals : [{
+    type        = "AWS"
+    identifiers = ["arn:aws:iam::${local.aws_account_id}:root"]
+  }]
+
+  dlq_principals = var.dlq_principals != null ? var.dlq_principals : local.principals
 
   redrive_policy = <<POLICY
 {
@@ -73,9 +80,12 @@ data "aws_iam_policy_document" "this" {
   statement {
     effect = "Allow"
 
-    principals {
-      type        = "AWS"
-      identifiers = local.principal_roles
+    dynamic "principals" {
+      for_each = local.principals
+      content {
+        type        = principals.value.type
+        identifiers = principals.value.identifiers
+      }
     }
 
     actions   = ["sqs:*"]
@@ -111,9 +121,12 @@ data "aws_iam_policy_document" "sqs_dlq" {
   statement {
     effect = "Allow"
 
-    principals {
-      type        = "AWS"
-      identifiers = local.principal_roles
+    dynamic "principals" {
+      for_each = local.dlq_principals
+      content {
+        type        = principals.value.type
+        identifiers = principals.value.identifiers
+      }
     }
 
     actions   = ["sqs:*"]
