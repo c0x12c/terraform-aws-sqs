@@ -63,10 +63,23 @@ variable "max_receive_count" {
   default     = 3
 }
 
-variable "principal_roles" {
-  description = "A list of IAM roles that a specific principal (user, service, or account) can assume."
-  type        = list(string)
-  default     = null
+variable "principals" {
+  description = "List of principals to be granted access to the SQS queue"
+  type = list(object({
+    type        = string
+    identifiers = list(string)
+  }))
+  default = null
+}
+
+variable "dlq_principals" {
+  description = "List of principals to be granted access to the dead-letter SQS queue, default to the same as principals"
+  type = list(object({
+    type        = string
+    identifiers = list(string)
+  }))
+  default = null
+
 }
 
 variable "content_based_deduplication" {

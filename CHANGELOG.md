@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0]() (2026-01-07)
+
+### Breaking changes
+
+* Replace `principal_roles` variable with `principals` variable for more flexible principal type support
+* The new `principals` variable accepts a list of objects with `type` and `identifiers` fields, supporting AWS, Service, and other principal types
+
+### Features
+
+* Add `principals` variable to support multiple principal types (AWS, Service, etc.) for queue access control
+* Add `dlq_principals` variable to configure separate principals for the dead-letter queue (defaults to same as `principals`)
+* Update IAM policy documents to use dynamic principals blocks for better flexibility
+* Support service principals (e.g., S3, SNS) in addition to AWS IAM roles
+
+### Migration Guide
+
+If you were using `principal_roles`:
+
+**Before:**
+```hcl
+principal_roles = ["arn:aws:iam::123456789012:role/MyRole"]
+```
+
+**After:**
+```hcl
+principals = [
+  {
+    type        = "AWS"
+    identifiers = ["arn:aws:iam::123456789012:role/MyRole"]
+  }
+]
+```
+
 ## [0.3.0]() (2025-12-29)
 
 ### Breaking changes
